@@ -1,0 +1,907 @@
+/* ==========================================================================
+   BITE — style.css
+   Single external stylesheet for every page (FR-17).
+   Sections: 1. Tokens  2. Base  3. Layout  4. Components  5. Pages
+             6. Media queries
+   ========================================================================== */
+
+
+/* ==========================================================================
+   1. TOKENS
+   All colours, fonts and spacing are declared once here (FR-18).
+   ========================================================================== */
+
+:root {
+  /* Colour palette */
+  --ink: #0E0E0C;      /* page background */
+  --bone: #E8E2D4;     /* body text, borders */
+  --accent: #E0451F;   /* links, hover states, highlights */
+  --muted: #8F8A80;    /* captions, metadata, footer (lightened from #6B675F to pass WCAG AA) */
+  --panel: #1A1A17;    /* table rows, form fields */
+  --panel-hover: #26261F;          /* table row hover */
+  --shade: rgba(14, 14, 12, 0.55); /* --ink at 55%, photo vignette */
+
+  /* Typefaces (system fonts are the fallback if Google Fonts fail) */
+  --font-display: "Anton", "Bebas Neue", Impact, "Arial Narrow", sans-serif;
+  --font-serif: "EB Garamond", Garamond, Georgia, "Times New Roman", serif;
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  /* Type scale */
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.75rem;
+  --text-2xl: 2.5rem;
+  --text-3xl: 3.5rem;
+  --text-hero: 4.5rem;
+
+  /* Spacing scale (0.5rem unit) */
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2rem;
+  --space-5: 3rem;
+  --space-6: 4rem;
+
+  /* Layout */
+  --max-width: 1200px;
+  --border: 1px solid var(--bone);
+  --border-muted: 1px solid var(--muted);
+
+  /* Motion */
+  --speed: 0.4s;
+
+  /* Photo treatment ("faded film"): applied at rest, removed on hover/focus */
+  --film-filter: saturate(0.55) contrast(1.12) sepia(0.18) brightness(0.92);
+  --clean-filter: saturate(1) contrast(1) sepia(0) brightness(1);
+
+  /* Grain texture (SVG noise), shared by the page overlay and the photos */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+
+/* ==========================================================================
+   2. BASE
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--ink);
+  color: var(--bone);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: 1.6;
+}
+
+/* Grain overlay: sits above everything but never blocks clicks (FR-25) */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: var(--grain);
+}
+
+h1,
+h2,
+h3 {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+h1 {
+  font-size: var(--text-2xl);
+}
+
+h2 {
+  font-size: var(--text-xl);
+}
+
+h3 {
+  font-size: var(--text-lg);
+  color: var(--accent);
+}
+
+p {
+  margin: 0 0 var(--space-2);
+}
+
+a {
+  color: var(--accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  transition: color var(--speed);
+}
+
+a:hover {
+  color: var(--bone);
+}
+
+/* Visible keyboard focus for every interactive element (NFR-09) */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+audio:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+strong {
+  font-weight: 700;
+  color: var(--bone);
+}
+
+em {
+  font-family: var(--font-serif);
+  font-size: 1.1em;
+}
+
+u {
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.18em;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Photo treatment: faded film look until hover or focus (FR-24).
+   The link wrapping each photo carries a vignette (::before) and
+   grain (::after); both fade out with the filter to reveal the original. */
+.photo img {
+  filter: var(--film-filter);
+  transition: filter var(--speed) ease;
+}
+
+.photo a {
+  position: relative;
+  overflow: hidden;
+}
+
+.photo a::before,
+.photo a::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  pointer-events: none;
+  transition: opacity var(--speed) ease;
+}
+
+/* Vignette: darkens the edges */
+.photo a::before {
+  background: radial-gradient(ellipse at center, transparent 50%, var(--shade) 100%);
+}
+
+/* Grain: noise blended into the photo */
+.photo a::after {
+  background-image: var(--grain);
+  mix-blend-mode: overlay;
+  opacity: 0.22;
+}
+
+.photo:hover img,
+.photo:focus-within img {
+  filter: var(--clean-filter);
+}
+
+.photo:hover a::before,
+.photo:hover a::after,
+.photo:focus-within a::before,
+.photo:focus-within a::after {
+  opacity: 0;
+}
+
+
+/* ==========================================================================
+   3. LAYOUT
+   ========================================================================== */
+
+.container {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--space-2);
+}
+
+/* Site header and navigation — identical on every page (FR-19) */
+.site-header {
+  border-bottom: var(--border-muted);
+}
+
+.site-header .container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding-top: var(--space-2);
+  padding-bottom: var(--space-2);
+}
+
+.brand {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  letter-spacing: 0.04em;
+  line-height: 1;
+  color: var(--bone);
+  text-decoration: none;
+}
+
+.brand:hover {
+  color: var(--accent);
+}
+
+.site-nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.site-nav a {
+  display: inline-block;
+  padding: var(--space-1) 0;
+  color: var(--bone);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  text-transform: uppercase;
+  border-bottom: 2px solid transparent;
+}
+
+.site-nav a:hover {
+  color: var(--accent);
+}
+
+/* Current page highlight */
+.site-nav a[aria-current="page"] {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+/* main also carries .container, so this needs the extra specificity */
+main.container {
+  display: block;
+  padding-top: var(--space-5);
+  padding-bottom: var(--space-6);
+}
+
+.section {
+  margin-bottom: var(--space-6);
+}
+
+.section-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+  padding-bottom: var(--space-1);
+  border-bottom: var(--border-muted);
+}
+
+.section-head h2 {
+  margin: 0;
+}
+
+.section-number {
+  color: var(--accent);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+/* Site footer */
+.site-footer {
+  border-top: var(--border-muted);
+  padding: var(--space-4) 0;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+.site-footer .container {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.site-footer h2 {
+  margin-bottom: var(--space-1);
+  color: var(--bone);
+  font-size: var(--text-base);
+  letter-spacing: 0.06em;
+}
+
+.site-footer ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.site-footer a {
+  color: var(--bone);
+}
+
+.site-footer a:hover {
+  color: var(--accent);
+}
+
+.footer-note {
+  margin: 0;
+}
+
+
+/* ==========================================================================
+   4. COMPONENTS
+   ========================================================================== */
+
+/* Skip link: hidden until focused by keyboard */
+.skip-link {
+  position: absolute;
+  top: var(--space-1);
+  left: var(--space-1);
+  z-index: 200;
+  padding: var(--space-1) var(--space-2);
+  background-color: var(--accent);
+  color: var(--ink);
+  font-weight: 700;
+  transform: translateY(-200%);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+/* Page intro (eyebrow + h1 + lede) */
+.page-intro {
+  max-width: 52rem;
+  margin-bottom: var(--space-6);
+}
+
+.eyebrow {
+  margin-bottom: var(--space-1);
+  color: var(--muted);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.lede {
+  font-size: var(--text-lg);
+  max-width: 40rem;
+}
+
+/* Interpretation — the one-sentence reading of a photograph */
+.interpretation {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: var(--text-xl);
+  font-style: italic;
+  line-height: 1.35;
+  color: var(--bone);
+}
+
+/* Metadata line under a photo */
+.meta {
+  margin: 0 0 var(--space-1);
+  color: var(--muted);
+  font-size: var(--text-sm);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Photo link wrapper */
+.photo a {
+  display: block;
+  border: 1px solid var(--panel);
+}
+
+/* Buttons and button-style links */
+.button {
+  display: inline-block;
+  padding: var(--space-2) var(--space-4);
+  border: 2px solid var(--accent);
+  background-color: var(--accent);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-decoration: none;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color var(--speed), color var(--speed);
+}
+
+.button:hover {
+  background-color: transparent;
+  color: var(--accent);
+}
+
+.button-ghost {
+  background-color: transparent;
+  color: var(--bone);
+  border-color: var(--bone);
+}
+
+.button-ghost:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/* Highlight marker */
+.highlight {
+  color: var(--accent);
+}
+
+/* Data table (FR-20) */
+.table-wrap {
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: var(--border);
+}
+
+.data-table caption {
+  padding-bottom: var(--space-2);
+  color: var(--muted);
+  font-size: var(--text-sm);
+  text-align: left;
+}
+
+.data-table th,
+.data-table td {
+  padding: var(--space-2);
+  border: var(--border-muted);
+  text-align: left;
+  vertical-align: top;
+}
+
+.data-table thead th {
+  background-color: var(--bone);
+  color: var(--ink);
+  font-size: var(--text-sm);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.data-table tbody th {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--text-lg);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+/* Zebra striping */
+.data-table tbody tr:nth-child(odd) {
+  background-color: var(--panel);
+}
+
+.data-table tbody tr:hover {
+  background-color: var(--panel-hover);
+}
+
+.data-table td:last-child {
+  font-family: var(--font-serif);
+  font-size: var(--text-lg);
+  font-style: italic;
+}
+
+/* Audio player */
+.player {
+  padding: var(--space-3);
+  border: var(--border-muted);
+  background-color: var(--panel);
+}
+
+.player audio {
+  display: block;
+  width: 100%;
+  margin-top: var(--space-2);
+}
+
+/* Link lists */
+.link-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: var(--border-muted);
+}
+
+.link-list li {
+  border-bottom: var(--border-muted);
+}
+
+.link-list a {
+  display: block;
+  padding: var(--space-2) 0;
+  color: var(--bone);
+  text-decoration: none;
+}
+
+.link-list a:hover {
+  color: var(--accent);
+}
+
+.link-list span {
+  display: block;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+/* Form (FR-21) */
+.form {
+  display: grid;
+  gap: var(--space-3);
+  max-width: 40rem;
+}
+
+.field label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.field input,
+.field select,
+.field textarea {
+  display: block;
+  width: 100%;
+  padding: var(--space-2);
+  border: var(--border-muted);
+  border-radius: 0;
+  background-color: var(--panel);
+  color: var(--bone);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  transition: border-color var(--speed);
+}
+
+.field textarea {
+  min-height: 8rem;
+  resize: vertical;
+  font-family: var(--font-serif);
+  font-size: var(--text-lg);
+  font-style: italic;
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+  color: var(--muted);
+  opacity: 1;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: var(--bone);
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Invalid state: only once the visitor has typed something */
+.field input:invalid:not(:placeholder-shown),
+.field textarea:invalid:not(:placeholder-shown) {
+  border-color: var(--accent);
+  box-shadow: inset 4px 0 0 var(--accent);
+}
+
+.hint {
+  margin: var(--space-1) 0 0;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+
+/* ==========================================================================
+   5. PAGES
+   ========================================================================== */
+
+/* ---------- Home ---------- */
+.hero {
+  margin-bottom: var(--space-6);
+}
+
+.hero h1 {
+  font-size: var(--text-3xl);
+  margin-bottom: var(--space-3);
+}
+
+.hero .photo {
+  margin: 0;
+}
+
+.hero figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-1);
+  padding-top: var(--space-2);
+}
+
+.manifesto {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.manifesto li {
+  padding: var(--space-2) 0;
+  border-bottom: var(--border-muted);
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.manifesto em {
+  font-size: 1.05em;
+  text-transform: none;
+  color: var(--accent);
+}
+
+.steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+}
+
+.steps li {
+  position: relative;
+  padding: var(--space-2) 0 var(--space-2) var(--space-6);
+  border-bottom: var(--border-muted);
+  counter-increment: step;
+}
+
+.steps li::before {
+  content: counter(step, decimal-leading-zero);
+  position: absolute;
+  top: var(--space-2);
+  left: 0;
+  color: var(--accent);
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  line-height: 1;
+}
+
+.closing {
+  padding: var(--space-5) var(--space-3);
+  border: var(--border-muted);
+  background-color: var(--panel);
+  text-align: center;
+}
+
+.closing .interpretation {
+  margin-bottom: var(--space-3);
+}
+
+.closing .button-row {
+  justify-content: center;
+}
+
+/* ---------- Gallery (masonry with CSS columns) ---------- */
+.masonry {
+  column-count: 1;
+  column-gap: var(--space-3);
+}
+
+.masonry .photo {
+  break-inside: avoid;
+  margin: 0 0 var(--space-5);
+}
+
+.masonry figcaption {
+  padding-top: var(--space-2);
+}
+
+/* ---------- The Look ---------- */
+.two-col {
+  display: grid;
+  gap: var(--space-4);
+}
+
+/* ---------- Contact ---------- */
+.rules {
+  margin: 0;
+  padding-left: var(--space-3);
+}
+
+.rules li {
+  margin-bottom: var(--space-1);
+}
+
+.rules li::marker {
+  color: var(--accent);
+}
+
+
+/* ==========================================================================
+   6. MEDIA QUERIES
+   Mobile first. Breakpoints at 600px and 900px (NFR-02).
+   ========================================================================== */
+
+/* Small phones: below 600px the technique table stacks into cards */
+@media (max-width: 599px) {
+  .data-table,
+  .data-table tbody,
+  .data-table tr,
+  .data-table th,
+  .data-table td {
+    display: block;
+    width: 100%;
+  }
+
+  /* Column headers hidden visually but kept for screen readers */
+  .data-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .data-table caption {
+    display: block;
+  }
+
+  /* Border moves from the table to the body so the caption sits outside it */
+  .data-table {
+    border: 0;
+  }
+
+  .data-table tbody {
+    border: var(--border);
+  }
+
+  .data-table tr {
+    border-bottom: var(--border-muted);
+  }
+
+  .data-table th,
+  .data-table td {
+    border: 0;
+    padding: var(--space-1) var(--space-2);
+  }
+
+  .data-table tbody th {
+    padding-top: var(--space-2);
+  }
+
+  .data-table td:last-child {
+    padding-bottom: var(--space-2);
+  }
+
+  /* Label each cell with its column name */
+  .data-table td::before {
+    content: attr(data-label);
+    display: block;
+    color: var(--muted);
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    font-style: normal;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+}
+
+/* Tablet: 600px and up */
+@media (min-width: 600px) {
+  .container {
+    padding: 0 var(--space-4);
+  }
+
+  .site-nav ul {
+    column-gap: var(--space-3);
+  }
+
+  .site-nav a {
+    letter-spacing: 0.12em;
+  }
+
+  h1 {
+    font-size: var(--text-3xl);
+  }
+
+  h2 {
+    font-size: var(--text-2xl);
+  }
+
+  .hero h1 {
+    font-size: var(--text-hero);
+  }
+
+  .masonry {
+    column-count: 2;
+  }
+
+  .site-footer .container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Desktop: 900px and up */
+@media (min-width: 900px) {
+  .site-header .container {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  main.container {
+    padding-top: var(--space-6);
+  }
+
+  .hero h1 {
+    font-size: 6rem;
+  }
+
+  .manifesto li {
+    font-size: var(--text-2xl);
+  }
+
+  .masonry {
+    column-count: 3;
+  }
+
+  .two-col {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6);
+  }
+
+  .site-footer .container {
+    grid-template-columns: 2fr 1fr 1fr;
+  }
+}
+
+/* Respect reduced motion preferences (NFR-10) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}

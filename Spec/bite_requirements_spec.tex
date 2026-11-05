@@ -1,0 +1,315 @@
+\documentclass[11pt,a4paper]{article}
+
+% ---------- Packages ----------
+\usepackage[margin=2.2cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+% ---------- Colours (match the site palette) ----------
+\definecolor{ink}{HTML}{0E0E0C}
+\definecolor{bone}{HTML}{E8E2D4}
+\definecolor{accent}{HTML}{E0451F}
+\definecolor{muted}{HTML}{6B675F}
+
+% ---------- Styling ----------
+\titleformat{\section}{\Large\bfseries\color{ink}}{\color{accent}\thesection}{0.8em}{}
+\titleformat{\subsection}{\large\bfseries\color{ink}}{\color{accent}\thesubsection}{0.6em}{}
+\setlist{itemsep=2pt, topsep=4pt}
+\renewcommand{\arraystretch}{1.3}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{muted}SE 310 -- Bite: Requirements Specification}
+\fancyhead[R]{\small\color{muted}v1.0}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% Requirement helper: \req{ID}{Priority}{Text}
+\newcommand{\req}[3]{\textbf{\color{accent}#1} & #2 & #3 \\}
+
+% Swatch helper
+\newcommand{\swatch}[1]{\textcolor[HTML]{#1}{\rule{1.2em}{1.2em}}}
+
+\begin{document}
+
+% ---------- Title ----------
+\begin{titlepage}
+  \centering
+  \vspace*{3cm}
+  {\Huge\bfseries\color{ink} BITE\par}
+  \vspace{0.4cm}
+  {\Large\itshape\color{muted} An editorial website on raw photography\par}
+  \vspace{1.5cm}
+  {\large Requirements Specification\par}
+  \vspace{0.3cm}
+  {\color{accent}\rule{0.4\textwidth}{1.5pt}\par}
+  \vspace{1.5cm}
+  \begin{tabular}{ll}
+    Course & SE 310 -- Final Project: Developing a Multi-Page Website \\
+    Author & Salim Babhair \\
+    Version & 1.0 \\
+    Date & \today \\
+  \end{tabular}
+  \vfill
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+% =========================================================
+\section{Introduction}
+
+\subsection{Purpose}
+This document defines the requirements for \textit{Bite}, a multi-page static website built
+with HTML5 and a single external CSS file. It sets out what the site must do, how it must
+look and the criteria used to accept it. It also maps every requirement to the SE 310
+brief and grading rubric, so nothing in the brief is missed.
+
+\subsection{Scope}
+\textit{Bite} presents a photographic aesthetic built on raw, unpolished imagery: hard flash,
+film grain, fisheye lenses, desaturated film tones and subjects that feel feral or calm in
+the middle of chaos. Every image is paired with one short interpretive sentence.
+
+\textbf{In scope:} four linked HTML pages, one stylesheet, local media (images and audio),
+a contact form, W3C validation, and cross-browser testing.
+
+\textbf{Out of scope:} JavaScript, frameworks, back-end form processing, a CMS and hosting.
+
+\subsection{Definitions}
+\begin{description}[leftmargin=2.5cm, style=nextline]
+  \item[Interpretation] A single short sentence (12 words or fewer) that reads an image.
+  \item[MUST] The requirement is mandatory for acceptance.
+  \item[SHOULD] The requirement is strongly recommended but not mandatory.
+  \item[COULD] The requirement is a stretch goal.
+\end{description}
+
+% =========================================================
+\section{Concept}
+
+\subsection{Creative Direction}
+The site works like a printed photo zine: a dark canvas, heavy type and lots of empty
+space. The writing is short and declarative, and it never explains too much. The tone is
+confident, slightly menacing, and quiet.
+
+\subsection{Sample Interpretations}
+\begin{itemize}
+  \item Snarling dog under flash --- \textit{``Not angry. Honest.''}
+  \item Figure on fire carrying a briefcase --- \textit{``She's still going to the meeting.''}
+  \item Empty road, parked motorcycle --- \textit{``The road doesn't ask where you're going.''}
+  \item Pyramid with a lone figure --- \textit{``Some things were here before the question.''}
+  \item Fisheye portrait --- \textit{``Distortion is just closeness.''}
+\end{itemize}
+
+\subsection{Target Audience}
+Visitors interested in photography, visual culture and design, mainly on mobile and
+desktop browsers.
+
+% =========================================================
+\section{Design System}
+
+\subsection{Colour Palette}
+All colours MUST be declared once as CSS custom properties on \texttt{:root}.
+
+\begin{center}
+\begin{tabularx}{0.9\textwidth}{c l l L}
+\toprule
+ & \textbf{Token} & \textbf{Hex} & \textbf{Use} \\
+\midrule
+\swatch{0E0E0C} & \texttt{-{}-ink}    & \texttt{\#0E0E0C} & Page background \\
+\swatch{E8E2D4} & \texttt{-{}-bone}   & \texttt{\#E8E2D4} & Body text, borders \\
+\swatch{E0451F} & \texttt{-{}-accent} & \texttt{\#E0451F} & Links, hover states, highlights \\
+\swatch{6B675F} & \texttt{-{}-muted}  & \texttt{\#6B675F} & Captions, metadata, footer \\
+\swatch{1A1A17} & \texttt{-{}-panel}  & \texttt{\#1A1A17} & Table rows, form fields \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{Typography}
+\begin{center}
+\begin{tabularx}{0.9\textwidth}{l l L}
+\toprule
+\textbf{Role} & \textbf{Typeface} & \textbf{Notes} \\
+\midrule
+Headings      & Anton (or Bebas Neue) & Uppercase, tight letter-spacing \\
+Interpretations & EB Garamond, italic & Larger size, generous line-height \\
+Body / UI     & System sans-serif stack & For readability and speed \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{Layout \& Spacing}
+\begin{itemize}
+  \item A spacing scale based on a \texttt{0.5rem} unit (\texttt{-{}-space-1} to \texttt{-{}-space-6}).
+  \item Maximum content width of \texttt{1200px}, centred.
+  \item The gallery uses CSS \texttt{columns} for a masonry effect: 3 columns on desktop,
+        2 on tablet and 1 on mobile.
+  \item A grain texture overlay applied with a \texttt{body::before} pseudo-element.
+\end{itemize}
+
+\subsection{Imagery Treatment}
+Images appear at reduced saturation (\texttt{filter: saturate(0.6)}) and return to full
+colour on hover or focus, with a short CSS transition.
+
+% =========================================================
+\section{Site Map}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{l l L}
+\toprule
+\textbf{Page} & \textbf{File} & \textbf{Content} \\
+\midrule
+Home        & \texttt{index.html}   & Hero image, manifesto lines, ordered list ``How to look at it'' \\
+Gallery     & \texttt{gallery.html} & Masonry grid of images, each with alt text and an interpretation \\
+The Look    & \texttt{look.html}    & Technique table, ambient \texttt{<audio>} track, external links \\
+Contact     & \texttt{contact.html} & ``Send us your interpretation'' form \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\noindent Directory structure:
+\begin{verbatim}
+bite/
+|-- index.html
+|-- gallery.html
+|-- look.html
+|-- contact.html
+|-- css/style.css
+|-- images/   (original or royalty-free photos only)
+`-- media/    (audio file, e.g. ambient.mp3)
+\end{verbatim}
+
+% =========================================================
+\section{Functional Requirements}
+
+\subsection{Structure \& Text (Rubric: HTML Structure \& Text Formatting)}
+\begin{longtable}{@{}p{1.6cm}p{1.6cm}p{12.3cm}@{}}
+\toprule
+\textbf{ID} & \textbf{Priority} & \textbf{Requirement} \\
+\midrule
+\endhead
+\req{FR-01}{MUST}{Every page uses \texttt{<header>}, \texttt{<nav>}, \texttt{<main>}, \texttt{<section>} and \texttt{<footer>}.}
+\req{FR-02}{MUST}{Each page has exactly one \texttt{<h1>}. \texttt{<h2>} and \texttt{<h3>} follow a logical hierarchy.}
+\req{FR-03}{MUST}{The site uses bold, italic, underline, varied colours and varied text sizes, applied with semantic tags (\texttt{<strong>}, \texttt{<em>}, \texttt{<u>}) and CSS.}
+\req{FR-04}{MUST}{Code uses consistent 2-space indentation and includes comments marking each major section.}
+\req{FR-05}{MUST}{Every page declares \texttt{<!DOCTYPE html>}, \texttt{lang="en"}, a UTF-8 charset and a unique \texttt{<title>}.}
+\bottomrule
+\end{longtable}
+
+\subsection{Elements, Media \& Form (Rubric: HTML Elements, Media \& Form)}
+\begin{longtable}{@{}p{1.6cm}p{1.6cm}p{12.3cm}@{}}
+\toprule
+\textbf{ID} & \textbf{Priority} & \textbf{Requirement} \\
+\midrule
+\endhead
+\req{FR-06}{MUST}{The site includes at least one \texttt{<ul>} (e.g. the navigation) and one \texttt{<ol>} (Home: ``How to look at it'').}
+\req{FR-07}{MUST}{Internal links connect all four pages through the navigation bar.}
+\req{FR-08}{MUST}{At least one external link uses \texttt{target="\_blank"} and \texttt{rel="noopener noreferrer"}.}
+\req{FR-09}{MUST}{Every \texttt{<img>} has descriptive \texttt{alt} text. Gallery images sit in \texttt{<figure>} with the interpretation in \texttt{<figcaption>}.}
+\req{FR-10}{MUST}{The Look page has a table with a \texttt{<caption>}, a \texttt{<thead>} with \texttt{<th scope="col">}, and at least 4 rows. Columns: Technique, Effect, Feeling.}
+\req{FR-11}{MUST}{A local audio file plays through \texttt{<audio controls>}, with fallback text. Embedded YouTube does not satisfy this requirement.}
+\req{FR-12}{MUST}{The contact form has labelled fields for name, email and message, plus a submit button.}
+\req{FR-13}{MUST}{Form fields use HTML5 validation: \texttt{required}, \texttt{type="email"} and \texttt{minlength} on the message.}
+\req{FR-14}{MUST}{Every label is linked to its input via \texttt{for}/\texttt{id}.}
+\req{FR-15}{SHOULD}{The form uses a \texttt{mailto:} action or a documented placeholder action, so submission is testable.}
+\req{FR-16}{MUST}{No empty pages, dead links or placeholder \texttt{href="\#"} values.}
+\bottomrule
+\end{longtable}
+
+\subsection{Visual Design (Rubric: CSS Design \& Layout)}
+\begin{longtable}{@{}p{1.6cm}p{1.6cm}p{12.3cm}@{}}
+\toprule
+\textbf{ID} & \textbf{Priority} & \textbf{Requirement} \\
+\midrule
+\endhead
+\req{FR-17}{MUST}{All styling lives in a single external file, \texttt{css/style.css}, with no inline styles or \texttt{<style>} blocks.}
+\req{FR-18}{MUST}{The colour scheme, fonts and spacing are identical across all pages and driven by custom properties.}
+\req{FR-19}{MUST}{The navigation bar sits in the same position on every page and highlights the current page.}
+\req{FR-20}{MUST}{The table is styled with borders, padding, a distinct header row and zebra striping.}
+\req{FR-21}{MUST}{The form is styled with full-width fields, visible focus states and accent-coloured invalid states (\texttt{:user-invalid} or \texttt{:invalid}).}
+\req{FR-22}{MUST}{The stylesheet styles colours, text, borders, box model properties and spacing.}
+\req{FR-23}{SHOULD}{The stylesheet is organised into commented sections: Tokens, Base, Layout, Components, Pages, Media queries.}
+\req{FR-24}{COULD}{Gallery images transition from desaturated to full colour on hover and focus.}
+\req{FR-25}{COULD}{A grain overlay applied with a pseudo-element, which does not block pointer events.}
+\bottomrule
+\end{longtable}
+
+% =========================================================
+\section{Non-Functional Requirements}
+
+\begin{longtable}{@{}p{1.6cm}p{1.6cm}p{12.3cm}@{}}
+\toprule
+\textbf{ID} & \textbf{Priority} & \textbf{Requirement} \\
+\midrule
+\endhead
+\multicolumn{3}{@{}l}{\textit{Responsiveness \& Compatibility (Rubric: Cross-Browser Functionality)}} \\
+\req{NFR-01}{MUST}{Every page includes \texttt{<meta name="viewport" content="width=device-width, initial-scale=1">}.}
+\req{NFR-02}{MUST}{Layout adapts at breakpoints of 600px and 900px, with no horizontal scrolling at 360px width.}
+\req{NFR-03}{MUST}{The site works on at least two browsers across two operating systems (e.g. Chrome on Windows 11 and Safari on iOS).}
+\req{NFR-04}{SHOULD}{The site is also tested on Firefox and Edge.}
+\midrule
+\multicolumn{3}{@{}l}{\textit{Validation (Rubric: Validation \& Compatibility Report)}} \\
+\req{NFR-05}{MUST}{Every HTML file passes the W3C Markup Validator with 0 errors.}
+\req{NFR-06}{MUST}{\texttt{style.css} passes the W3C CSS Validator with 0 errors.}
+\req{NFR-07}{SHOULD}{No warnings remain. Any that do are justified in the report.}
+\midrule
+\multicolumn{3}{@{}l}{\textit{Accessibility}} \\
+\req{NFR-08}{MUST}{Text contrast meets WCAG AA (4.5:1 for body text) against \texttt{-{}-ink}.}
+\req{NFR-09}{MUST}{All interactive elements are reachable by keyboard and show visible focus.}
+\req{NFR-10}{SHOULD}{Animations and transitions respect \texttt{prefers-reduced-motion}.}
+\req{NFR-11}{COULD}{The Lighthouse Accessibility score is 95 or higher on every page.}
+\midrule
+\multicolumn{3}{@{}l}{\textit{Performance \& Content}} \\
+\req{NFR-12}{SHOULD}{Images are compressed (WebP or JPEG, 300KB or less each) and use \texttt{loading="lazy"} below the fold.}
+\req{NFR-13}{MUST}{All images and audio are original or royalty-free (Unsplash, Pexels, Pixabay), with credits in the footer.}
+\req{NFR-14}{MUST}{The site uses no JavaScript and no CSS or JS frameworks.}
+\bottomrule
+\end{longtable}
+
+% =========================================================
+\section{Constraints \& Assumptions}
+\begin{itemize}
+  \item HTML5 and CSS3 only, with one external stylesheet.
+  \item Web fonts may load from Google Fonts. If they fail, the site falls back gracefully to system fonts.
+  \item The site runs from local files, so no server is required.
+  \item Deadline: 24/11/2026. Submission is a \texttt{.zip} of the site folder plus a PDF report.
+\end{itemize}
+
+% =========================================================
+\section{Acceptance Criteria}
+The site is accepted when:
+\begin{enumerate}
+  \item All \textbf{MUST} requirements are met and verified.
+  \item W3C validator screenshots show 0 errors for every HTML file and the CSS file.
+  \item Compatibility testing across at least two browsers on two operating systems shows
+        no unresolved \textit{Critical} or \textit{Major} issues.
+  \item Every item on the brief's submission checklist is ticked.
+\end{enumerate}
+
+% =========================================================
+\section{Traceability Matrix}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{l l L}
+\toprule
+\textbf{Rubric Criterion} & \textbf{CLO / Task} & \textbf{Requirements} \\
+\midrule
+HTML Structure \& Text Formatting & CLO 3, Task 1 & FR-01 -- FR-05 \\
+HTML Elements, Media \& Form       & CLO 4, Task 1 & FR-06 -- FR-16 \\
+CSS Design \& Layout               & CLO 5, Tasks 1--2 & FR-17 -- FR-25 \\
+Cross-Browser Functionality        & CLO 6, Task 2 & NFR-01 -- NFR-04 \\
+Validation \& Compatibility Report & CLO 7, Tasks 3--5 & NFR-05 -- NFR-07, Section 8 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\end{document}

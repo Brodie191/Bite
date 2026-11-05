@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Send Bite your own one-sentence interpretation of a photograph.">
+  <title>Contact — Bite</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&amp;family=EB+Garamond:ital@0;1&amp;display=swap">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- ========== SITE HEADER ========== -->
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="index.html">Bite</a>
+      <nav class="site-nav" aria-label="Main">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="look.html">The Look</a></li>
+          <li><a href="contact.html" aria-current="page">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ========== MAIN CONTENT ========== -->
+  <main id="main" class="container">
+
+    <!-- Page intro -->
+    <section class="page-intro" aria-labelledby="page-title">
+      <p class="eyebrow">Contact</p>
+      <h1 id="page-title">Send us your interpretation</h1>
+      <p class="lede">Pick a photograph from the <a href="gallery.html">gallery</a>. Look at it for longer than feels comfortable. Then give us <strong>one sentence.</strong></p>
+    </section>
+
+    <div class="two-col">
+
+      <!-- Rules -->
+      <section aria-labelledby="rules-title">
+        <h2 id="rules-title">The rules</h2>
+        <ol class="rules">
+          <li>One sentence. <strong>Twelve words or fewer.</strong></li>
+          <li>Read the image, don’t <u>describe</u> it.</li>
+          <li>No explaining. <em>Let it sit.</em></li>
+          <li>The best ones go in the next issue.</li>
+        </ol>
+      </section>
+
+      <!-- Form -->
+      <section aria-labelledby="form-title">
+        <h2 id="form-title">Your sentence</h2>
+        <!-- Submission opens the visitor's email client (no back end, see spec FR-15).
+             Replace the address below with the real inbox before submission. -->
+        <form class="form" action="mailto:submissions@bite.example" method="post" enctype="text/plain">
+
+          <div class="field">
+            <label for="name">Name</label>
+            <input id="name" name="name" type="text" autocomplete="name" placeholder="Your name" required>
+          </div>
+
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+          </div>
+
+          <div class="field">
+            <label for="photo">Photograph</label>
+            <select id="photo" name="photo">
+              <option value="any">Any photograph</option>
+              <option value="01-dog">01 · Not angry. Honest.</option>
+              <option value="02-briefcase">02 · She’s still going to the meeting.</option>
+              <option value="03-cat">03 · It saw you first.</option>
+              <option value="04-boxer">04 · Calm is a muscle.</option>
+              <option value="05-fisheye">05 · Distortion is just closeness.</option>
+              <option value="06-road">06 · The road doesn’t ask where you’re going.</option>
+              <option value="07-pyramid">07 · Some things were here before the question.</option>
+              <option value="08-kitchen">08 · Everyone left. The light stayed.</option>
+              <option value="09-horse">09 · Water rising. Horse unbothered.</option>
+              <option value="10-crowd">10 · Everyone moved. One of them didn’t.</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="message">Your interpretation</label>
+            <textarea id="message" name="message" rows="4" minlength="10" maxlength="120"
+                      placeholder="One sentence. Make it bite." aria-describedby="message-hint" required></textarea>
+            <p id="message-hint" class="hint">At least 10 characters. Keep it to twelve words.</p>
+          </div>
+
+          <div>
+            <button class="button" type="submit">Send it</button>
+          </div>
+
+        </form>
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- ========== SITE FOOTER ========== -->
+  <footer class="site-footer">
+    <div class="container">
+      <section aria-labelledby="footer-about">
+        <h2 id="footer-about">Bite</h2>
+        <p class="footer-note">An editorial zine on raw photography. SE 310 Final Project by Salim Babhair, 2026.</p>
+      </section>
+      <section aria-labelledby="footer-credits">
+        <h2 id="footer-credits">Credits</h2>
+        <ul>
+          <li>Photographs: placeholder images (to be replaced with credited photos).</li>
+          <li>Audio: “Ambient 01”, original recording for Bite.</li>
+        </ul>
+      </section>
+      <section aria-labelledby="footer-pages">
+        <h2 id="footer-pages">Pages</h2>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="look.html">The Look</a></li>
+        </ul>
+      </section>
+    </div>
+  </footer>
+</body>
+</html>
