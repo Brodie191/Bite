@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&amp;family=EB+Garamond:ital@0;1&amp;display=swap">
   <link rel="stylesheet" href="css/style.css">
+  <script src="js/main.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -32,150 +33,140 @@
   <main id="main" class="container">
 
     <!-- Page intro -->
-    <section class="page-intro" aria-labelledby="page-title">
-      <p class="eyebrow">Issue 01</p>
+    <section class="page-intro page-intro-tight" aria-labelledby="page-title">
+      <p class="eyebrow">Issue 01 — Feral / Calm</p>
       <h1 id="page-title">The Gallery</h1>
-      <p class="lede">Ten photographs. Ten sentences. <strong>Hover or focus</strong> on an image to bring its colour back.</p>
+      <p class="lede">Ten photographs. Ten sentences. <strong>Swipe, drag or use the arrow keys</strong> to sift through them. Hover or tap one and watch it develop.</p>
     </section>
 
-    <!-- Feral -->
-    <section class="section" aria-labelledby="feral-title">
-      <div class="section-head">
-        <span class="section-number">01</span>
-        <h2 id="feral-title">Feral</h2>
+    <!-- Filmstrip -->
+    <section class="strip" aria-label="Photographs" data-filmstrip>
+      <!-- Strip controls (wired up by js/main.js) -->
+      <div class="strip-controls">
+        <button class="strip-button" type="button" data-prev aria-label="Previous photograph">
+          <span aria-hidden="true">←</span>
+        </button>
+        <p class="strip-count"><span data-current>01</span> / 10</p>
+        <div class="strip-progress" aria-hidden="true"><span></span></div>
+        <button class="strip-button" type="button" data-next aria-label="Next photograph">
+          <span aria-hidden="true">→</span>
+        </button>
       </div>
-      <div class="masonry">
 
-        <figure class="photo">
-          <a href="images/dog-flash.jpg">
-            <img src="images/dog-flash.jpg" width="900" height="1200"
-                 alt="A dog snarling straight at the camera, lit by a harsh on-camera flash against a black night.">
-          </a>
+      <div class="strip-track" tabindex="0" role="region" aria-label="Photographs, use left and right arrow keys to move">
+
+        <figure class="photo slide">
+          <div class="photo-frame">
+            <img src="images/tony.jpeg" width="735" height="932"
+                 alt="Tony being Tony.">
+          </div>
           <figcaption>
-            <p class="meta">01 · Hard flash</p>
+            <p class="meta">01 · Feral · Hard flash</p>
             <p class="interpretation">Not angry. Honest.</p>
           </figcaption>
         </figure>
 
-        <figure class="photo">
-          <a href="images/briefcase-fire.jpg">
-            <img src="images/briefcase-fire.jpg" width="900" height="1200"
-                 alt="A stunt performer in a business suit, their back on fire, walking calmly forward carrying a briefcase.">
-          </a>
+        <figure class="photo slide">
+          <div class="photo-frame">
+            <img src="images/mafiaarabic.jpeg" width="675" height="1200"
+                 alt="A man in the desert cocking a gun.">
+          </div>
           <figcaption>
-            <p class="meta">02 · Long lens</p>
-            <p class="interpretation">She’s still going to the meeting.</p>
+            <p class="meta">02 · Feral · Long lens</p>
+            <p class="interpretation">Shoot first, ask questions later.</p>
           </figcaption>
         </figure>
 
-        <figure class="photo">
-          <a href="images/cat-headlights.jpg">
-            <img src="images/cat-headlights.jpg" width="1200" height="800"
-                 alt="A street cat frozen in car headlights at night, its eyes reflecting two bright green discs."
-                 loading="lazy">
-          </a>
+        <figure class="photo slide">
+          <div class="photo-frame">
+            <img src="images/Dive_.jpeg" width="576" height="720"
+                 alt="A free diver in the ocean, he caught a fish.">
+          </div>
           <figcaption>
-            <p class="meta">03 · Available light</p>
+            <p class="meta">03 · Feral · Available light</p>
             <p class="interpretation">It saw you first.</p>
           </figcaption>
         </figure>
 
-        <figure class="photo">
-          <a href="images/boxer-corner.jpg">
-            <img src="images/boxer-corner.jpg" width="900" height="1200"
-                 alt="A boxer slumped on a stool in the corner between rounds, eyes closed, sweat caught in the flash."
-                 loading="lazy">
-          </a>
+        <figure class="photo slide">
+          <div class="photo-frame">
+            <img src="images/boxer-knockdown.jpeg" width="650" height="999" loading="lazy"
+                 alt="A boxer standing in the corner of the ring, looking down at his opponent on the canvas as the referee leans in.">
+          </div>
           <figcaption>
-            <p class="meta">04 · Push-processed film</p>
+            <p class="meta">04 · Feral · Push-processed film</p>
             <p class="interpretation">Calm is a muscle.</p>
           </figcaption>
         </figure>
 
-        <figure class="photo">
-          <a href="images/fisheye-portrait.jpg">
-            <img src="images/fisheye-portrait.jpg" width="1000" height="1000"
-                 alt="A close fisheye portrait of a young man, his nose stretched toward the lens and the room bending behind him."
-                 loading="lazy">
-          </a>
+        <figure class="photo slide">
+          <div class="photo-frame">
+            <img src="images/vixen.jpeg" width="735" height="908" loading="lazy"
+                 alt="A close fisheye portrait of a young woman.">
+          </div>
           <figcaption>
-            <p class="meta">05 · Fisheye</p>
+            <p class="meta">05 · Feral · Fisheye</p>
             <p class="interpretation">Distortion is just closeness.</p>
           </figcaption>
         </figure>
 
-      </div>
-    </section>
-
-    <!-- Calm in the chaos -->
-    <section class="section" aria-labelledby="calm-title">
-      <div class="section-head">
-        <span class="section-number">02</span>
-        <h2 id="calm-title">Calm in the chaos</h2>
-      </div>
-      <div class="masonry">
-
-        <figure class="photo">
-          <a href="images/motorcycle-bridge.jpg">
-            <img src="images/motorcycle-bridge.jpg" width="736" height="908"
-                 alt="A rider's view over the handlebars of a green chopper with white flames, crossing a steel bridge into the setting sun."
-                 loading="lazy">
-          </a>
+        <figure class="photo slide">
+          <div class="photo-frame">
+            <img src="images/motorcycle-bridge.jpg" width="736" height="908" loading="lazy"
+                 alt="A rider's view over the handlebars of a green chopper with white flames, crossing a steel bridge into the setting sun.">
+          </div>
           <figcaption>
-            <p class="meta">06 · Wide angle, rider's eye</p>
+            <p class="meta">06 · Calm · Wide angle, rider’s eye</p>
             <p class="interpretation">The road doesn’t ask where you’re going.</p>
           </figcaption>
         </figure>
 
-        <figure class="photo">
-          <a href="images/pyramid-figure.jpg">
-            <img src="images/pyramid-figure.jpg" width="1200" height="800"
-                 alt="A lone figure standing small at the base of a pyramid under a pale, washed-out sky."
-                 loading="lazy">
-          </a>
+        <figure class="photo slide">
+          <div class="photo-frame">
+            <img src="images/labome.jpeg" width="675" height="1200" loading="lazy"
+                 alt="A lone figure sitting small at the base of an explosion, washed-out sky.">
+          </div>
           <figcaption>
-            <p class="meta">07 · Overexposed</p>
+            <p class="meta">07 · Calm · Overexposed</p>
             <p class="interpretation">Some things were here before the question.</p>
           </figcaption>
         </figure>
 
-        <figure class="photo">
-          <a href="images/kitchen-flash.jpg">
-            <img src="images/kitchen-flash.jpg" width="900" height="1200"
-                 alt="A small kitchen after a party, empty bottles and paper plates on the counter, blown out by flash."
-                 loading="lazy">
-          </a>
+        <figure class="photo slide">
+          <div class="photo-frame">
+            <img src="images/girls-pizza-night.jpeg" width="736" height="1091" loading="lazy"
+                 alt="Girl eating a slice of pizza, her face caught in a hard flash, everyone else blurred.">
+          </div>
           <figcaption>
-            <p class="meta">08 · Hard flash</p>
+            <p class="meta">08 · Calm · Hard flash</p>
             <p class="interpretation">Everyone left. The light stayed.</p>
           </figcaption>
         </figure>
 
-        <figure class="photo">
-          <a href="images/horse-flood.jpg">
-            <img src="images/horse-flood.jpg" width="1200" height="800"
-                 alt="A horse standing still in a flooded field, water up to its knees, grey sky behind."
-                 loading="lazy">
-          </a>
+        <figure class="photo slide">
+          <div class="photo-frame">
+            <img src="images/sit.jpeg" width="735" height="819" loading="lazy"
+                 alt="Man sat down posing at an abandoned building, the ceilling and ground washed out in a long exposure.">
+          </div>
           <figcaption>
-            <p class="meta">09 · Desaturated</p>
-            <p class="interpretation">Water rising. Horse unbothered.</p>
+            <p class="meta">09 · Calm · Desaturated</p>
+            <p class="interpretation">Unbothered.</p>
           </figcaption>
         </figure>
 
-        <figure class="photo">
-          <a href="images/hero.jpg">
-            <img src="images/hero.jpg" width="1600" height="900"
-                 alt="A crowd at night caught in a hard camera flash, one face turned straight to the lens while everyone else blurs."
-                 loading="lazy">
-          </a>
+        <figure class="photo slide">
+          <div class="photo-frame">
+            <img src="images/fire.jpeg" width="400" height="595" loading="lazy"
+                 alt="A man on fire">
+          </div>
           <figcaption>
-            <p class="meta">10 · Hard flash</p>
+            <p class="meta">10 · Calm · Hard flash</p>
             <p class="interpretation">Everyone moved. One of them didn’t.</p>
           </figcaption>
         </figure>
 
       </div>
+
     </section>
 
     <!-- Call to action -->
@@ -194,13 +185,13 @@
     <div class="container">
       <section aria-labelledby="footer-about">
         <h2 id="footer-about">Bite</h2>
-        <p class="footer-note">An editorial zine on raw photography. SE 310 Final Project by Salim Babhair, 2026.</p>
+        <p class="footer-note">An editorial zine on raw photography.</p>
       </section>
       <section aria-labelledby="footer-credits">
         <h2 id="footer-credits">Credits</h2>
         <ul>
-          <li>Photographs: placeholder images (to be replaced with credited photos).</li>
-          <li>Audio: “Ambient 01”, original recording for Bite.</li>
+          <li>Photographs: By yours truly.</li>
+          <li>Sound: “After Dark”, original soundscape for Bite.</li>
         </ul>
       </section>
       <section aria-labelledby="footer-pages">

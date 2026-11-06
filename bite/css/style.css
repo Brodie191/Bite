@@ -1,15 +1,15 @@
-/* ==========================================================================
+/* 
    BITE — style.css
    Single external stylesheet for every page (FR-17).
    Sections: 1. Tokens  2. Base  3. Layout  4. Components  5. Pages
              6. Media queries
-   ========================================================================== */
+   */
 
 
-/* ==========================================================================
+/* 
    1. TOKENS
    All colours, fonts and spacing are declared once here (FR-18).
-   ========================================================================== */
+  */
 
 :root {
   /* Colour palette */
@@ -20,6 +20,8 @@
   --panel: #1A1A17;    /* table rows, form fields */
   --panel-hover: #26261F;          /* table row hover */
   --shade: rgba(14, 14, 12, 0.55); /* --ink at 55%, photo vignette */
+  --glass: rgba(26, 26, 23, 0.86); /* --panel at 86%, music dock */
+  --glow: rgba(224, 69, 31, 0.55); /* --accent at 55%, play button pulse */
 
   /* Typefaces (system fonts are the fallback if Google Fonts fail) */
   --font-display: "Anton", "Bebas Neue", Impact, "Arial Narrow", sans-serif;
@@ -52,17 +54,19 @@
   --speed: 0.4s;
 
   /* Photo treatment ("faded film"): applied at rest, removed on hover/focus */
-  --film-filter: saturate(0.55) contrast(1.12) sepia(0.18) brightness(0.92);
-  --clean-filter: saturate(1) contrast(1) sepia(0) brightness(1);
+  /* Same function order in all three so they animate smoothly */
+  --film-filter: saturate(0.55) contrast(1.12) sepia(0.18) brightness(0.92) blur(0);
+  --develop-filter: saturate(0.45) contrast(0.82) sepia(0.32) brightness(1.16) blur(0.5px);
+  --clean-filter: saturate(1) contrast(1) sepia(0) brightness(1) blur(0);
 
   /* Grain texture (SVG noise), shared by the page overlay and the photos */
   --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 
-/* ==========================================================================
+/*  
    2. BASE
-   ========================================================================== */
+    */
 
 *,
 *::before,
@@ -82,6 +86,22 @@ body {
   font-family: var(--font-sans);
   font-size: var(--text-base);
   line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* Leave room for the fixed music dock */
+.js body {
+  padding-bottom: 6rem;
+}
+
+/* Hidden visually, still read by screen readers */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 /* Grain overlay: sits above everything but never blocks clicks (FR-25) */
@@ -170,21 +190,25 @@ img {
   height: auto;
 }
 
-/* Photo treatment: faded film look until hover or focus (FR-24).
-   The link wrapping each photo carries a vignette (::before) and
-   grain (::after); both fade out with the filter to reveal the original. */
+/* Photo treatment: faded film look at rest (FR-24).
+   .photo-frame wraps each photo and carries a vignette (::before) and
+   grain (::after). On hover/focus the photo develops like a Polaroid:
+   it goes briefly pale and soft, then settles into its original colours.
+   On touch screens js/main.js adds .is-developing on tap. */
 .photo img {
   filter: var(--film-filter);
   transition: filter var(--speed) ease;
 }
 
-.photo a {
+.photo-frame {
   position: relative;
+  display: block;
   overflow: hidden;
+  border: 1px solid var(--panel);
 }
 
-.photo a::before,
-.photo a::after {
+.photo-frame::before,
+.photo-frame::after {
   content: "";
   position: absolute;
   top: 0;
@@ -196,33 +220,50 @@ img {
 }
 
 /* Vignette: darkens the edges */
-.photo a::before {
+.photo-frame::before {
   background: radial-gradient(ellipse at center, transparent 50%, var(--shade) 100%);
 }
 
 /* Grain: noise blended into the photo */
-.photo a::after {
+.photo-frame::after {
   background-image: var(--grain);
   mix-blend-mode: overlay;
   opacity: 0.22;
 }
 
-.photo:hover img,
-.photo:focus-within img {
+.photo-frame:hover img,
+.photo-frame:focus-visible img,
+.photo-frame.is-developing img {
   filter: var(--clean-filter);
+  animation: develop 8.4s ease-out;
 }
 
-.photo:hover a::before,
-.photo:hover a::after,
-.photo:focus-within a::before,
-.photo:focus-within a::after {
+.photo-frame:hover::before,
+.photo-frame:hover::after,
+.photo-frame:focus-visible::before,
+.photo-frame:focus-visible::after,
+.photo-frame.is-developing::before,
+.photo-frame.is-developing::after {
   opacity: 0;
+  transition-duration: 1.2s;
+}
+
+@keyframes develop {
+  0% {
+    filter: var(--film-filter);
+  }
+  20% {
+    filter: var(--develop-filter);
+  }
+  100% {
+    filter: var(--clean-filter);
+  }
 }
 
 
-/* ==========================================================================
+/* 
    3. LAYOUT
-   ========================================================================== */
+   */
 
 .container {
   width: 100%;
@@ -358,9 +399,9 @@ main.container {
 }
 
 
-/* ==========================================================================
+/* 
    4. COMPONENTS
-   ========================================================================== */
+    */
 
 /* Skip link: hidden until focused by keyboard */
 .skip-link {
@@ -416,12 +457,6 @@ main.container {
   font-size: var(--text-sm);
   letter-spacing: 0.1em;
   text-transform: uppercase;
-}
-
-/* Photo link wrapper */
-.photo a {
-  display: block;
-  border: 1px solid var(--panel);
 }
 
 /* Buttons and button-style links */
@@ -634,9 +669,9 @@ main.container {
 }
 
 
-/* ==========================================================================
+/* 
    5. PAGES
-   ========================================================================== */
+   */
 
 /* ---------- Home ---------- */
 .hero {
@@ -721,19 +756,467 @@ main.container {
   justify-content: center;
 }
 
-/* ---------- Gallery (masonry with CSS columns) ---------- */
-.masonry {
-  column-count: 1;
-  column-gap: var(--space-3);
+/* ---------- Gallery (horizontal filmstrip) ---------- */
+.page-intro-tight {
+  margin-bottom: var(--space-4);
 }
 
-.masonry .photo {
-  break-inside: avoid;
-  margin: 0 0 var(--space-5);
+.strip {
+  margin-bottom: var(--space-6);
 }
 
-.masonry figcaption {
+/* Full-bleed track that scrolls sideways and snaps to each photo */
+.strip-track {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  margin: 0 calc(50% - 50vw);
+  padding: var(--space-2) max(var(--space-2), calc(50vw - 14rem)) var(--space-3);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  cursor: grab;
+}
+
+.strip-track::-webkit-scrollbar {
+  display: none;
+}
+
+.strip-track:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -4px;
+}
+
+.strip-track.is-dragging {
+  cursor: grabbing;
+  scroll-snap-type: none;
+}
+
+.slide {
+  flex: 0 0 auto;
+  margin: 0;
+  scroll-snap-align: center;
+  transition: opacity var(--speed) ease, transform var(--speed) ease;
+}
+
+/* With JS on, side photos recede and the centred one comes forward */
+.js .slide {
+  opacity: 0.3;
+  transform: scale(0.9);
+}
+
+.js .slide.is-active {
+  opacity: 1;
+  transform: none;
+}
+
+.slide img {
+  width: auto;
+  height: auto;
+  max-width: 82vw;
+  max-height: min(58vh, 560px);
+  user-select: none;
+}
+
+/* Caption never widens the slide past its photo */
+.slide figcaption {
+  width: 0;
+  min-width: 100%;
   padding-top: var(--space-2);
+}
+
+.strip-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-1);
+}
+
+.strip-controls .strip-progress {
+  order: -1;
+}
+
+.strip-controls .strip-count {
+  order: -2;
+}
+
+html:not(.js) .strip-controls {
+  display: none;
+}
+
+.strip-button {
+  flex: 0 0 auto;
+  width: 3rem;
+  height: 3rem;
+  border: 1px solid var(--bone);
+  background-color: transparent;
+  color: var(--bone);
+  font-size: var(--text-lg);
+  cursor: pointer;
+  transition: color var(--speed), border-color var(--speed), opacity var(--speed);
+}
+
+.strip-button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.strip-button:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+
+.strip-count {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.strip-count span {
+  color: var(--accent);
+}
+
+.strip-progress {
+  flex: 1;
+  height: 2px;
+  background-color: var(--panel);
+}
+
+.strip-progress span {
+  display: block;
+  width: 10%;
+  height: 100%;
+  background-color: var(--accent);
+  transition: width var(--speed) ease;
+}
+
+/* ---------- Music dock + mixer (built by js/main.js) ---------- */
+.sound {
+  position: fixed;
+  right: var(--space-2);
+  bottom: var(--space-2);
+  z-index: 150;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-1);
+  max-width: calc(100% - 2rem);
+}
+
+.dock {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  max-width: 100%;
+  padding: var(--space-1);
+  border: var(--border-muted);
+  border-radius: 999px;
+  background-color: var(--glass);
+  backdrop-filter: blur(12px);
+}
+
+.dock-toggle {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 0;
+  border-radius: 50%;
+  background-color: var(--accent);
+  color: var(--ink);
+  cursor: pointer;
+  transition: background-color var(--speed);
+}
+
+.dock-toggle:hover {
+  background-color: var(--bone);
+}
+
+.dock-toggle svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  fill: currentColor;
+}
+
+.dock.is-waiting .dock-toggle {
+  animation: dock-pulse 2s ease-in-out infinite;
+}
+
+.dock-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.25;
+}
+
+.dock-title {
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.dock-sub {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 0.75rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dock.is-waiting .dock-sub {
+  color: var(--accent);
+}
+
+/* Equaliser bars: only move while playing */
+.dock-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 1.1rem;
+}
+
+.dock-bars i {
+  display: block;
+  width: 3px;
+  height: 3px;
+  background-color: var(--accent);
+}
+
+.dock.is-playing .dock-bars i {
+  animation: dock-eq 0.9s ease-in-out infinite alternate;
+}
+
+.dock.is-playing .dock-bars i:nth-child(2) {
+  animation-delay: -0.3s;
+  animation-duration: 1.1s;
+}
+
+.dock.is-playing .dock-bars i:nth-child(3) {
+  animation-delay: -0.6s;
+  animation-duration: 0.8s;
+}
+
+.dock.is-playing .dock-bars i:nth-child(4) {
+  animation-delay: -0.15s;
+  animation-duration: 1.3s;
+}
+
+.dock-volume input {
+  width: 5.5rem;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+/* Round icon button that opens the mixer */
+.dock-mix {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: var(--border-muted);
+  border-radius: 50%;
+  background-color: transparent;
+  color: var(--bone);
+  cursor: pointer;
+  transition: color var(--speed), border-color var(--speed), background-color var(--speed);
+}
+
+.dock-mix svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  fill: currentColor;
+}
+
+.dock-mix:hover,
+.dock.is-mixing .dock-mix {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Mixer panel */
+.mixer {
+  width: 24rem;
+  max-width: 100%;
+  padding: var(--space-2);
+  border: var(--border-muted);
+  border-radius: 1rem;
+  background-color: var(--glass);
+  backdrop-filter: blur(12px);
+}
+
+.mixer[hidden] {
+  display: none;
+}
+
+.mixer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-2);
+}
+
+.mixer-title {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.mixer-reset {
+  padding: 0.25rem var(--space-1);
+  border: var(--border-muted);
+  background-color: transparent;
+  color: var(--muted);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.mixer-reset:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.mixer-channels {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--space-1);
+}
+
+.channel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) 0;
+  border: 1px solid var(--panel);
+  background-color: var(--ink);
+  transition: opacity var(--speed);
+}
+
+.channel.is-silent {
+  opacity: 0.4;
+}
+
+.channel-strip {
+  display: flex;
+  align-items: stretch;
+  gap: 0.4rem;
+  height: 9rem;
+}
+
+/* Level meter: a bar scaled by js/main.js */
+.channel-meter {
+  position: relative;
+  width: 6px;
+  overflow: hidden;
+  background-color: var(--panel);
+}
+
+.channel-meter span {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 100%;
+  background: linear-gradient(to top, var(--bone) 0%, var(--bone) 60%, var(--accent) 100%);
+  transform: scaleY(0);
+  transform-origin: bottom;
+}
+
+/* Vertical fader */
+.channel-fader {
+  width: 1.5rem;
+  height: 100%;
+  margin: 0;
+  writing-mode: vertical-lr;
+  direction: rtl;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.channel-name {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.channel-buttons {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.channel-buttons button {
+  width: 1.6rem;
+  height: 1.6rem;
+  padding: 0;
+  border: var(--border-muted);
+  background-color: transparent;
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.channel-buttons button:hover {
+  border-color: var(--bone);
+  color: var(--bone);
+}
+
+.channel-buttons .channel-mute[aria-pressed="true"] {
+  border-color: var(--accent);
+  background-color: var(--accent);
+  color: var(--ink);
+}
+
+.channel-buttons .channel-solo[aria-pressed="true"] {
+  border-color: var(--bone);
+  background-color: var(--bone);
+  color: var(--ink);
+}
+
+.mixer-filter {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.mixer-filter input {
+  flex: 1;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+@keyframes dock-eq {
+  from {
+    height: 3px;
+  }
+  to {
+    height: 1.1rem;
+  }
+}
+
+@keyframes dock-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 var(--glow);
+  }
+  50% {
+    box-shadow: 0 0 0 10px transparent;
+  }
 }
 
 /* ---------- The Look ---------- */
@@ -757,10 +1240,10 @@ main.container {
 }
 
 
-/* ==========================================================================
+/* 
    6. MEDIA QUERIES
    Mobile first. Breakpoints at 600px and 900px (NFR-02).
-   ========================================================================== */
+   */
 
 /* Small phones: below 600px the technique table stacks into cards */
 @media (max-width: 599px) {
@@ -771,6 +1254,12 @@ main.container {
   .data-table td {
     display: block;
     width: 100%;
+  }
+
+  /* Phones: compact dock, hardware volume buttons */
+  .dock-volume,
+  .dock-bars {
+    display: none;
   }
 
   /* Column headers hidden visually but kept for screen readers */
@@ -853,10 +1342,6 @@ main.container {
     font-size: var(--text-hero);
   }
 
-  .masonry {
-    column-count: 2;
-  }
-
   .site-footer .container {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -880,10 +1365,6 @@ main.container {
 
   .manifesto li {
     font-size: var(--text-2xl);
-  }
-
-  .masonry {
-    column-count: 3;
   }
 
   .two-col {
